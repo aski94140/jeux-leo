@@ -1,63 +1,60 @@
-document.addEventListener('DOMContentLoaded', () => {
-    fetch('games.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(games => {
-            const randomGame = games[Math.floor(Math.random() * games.length)];
-            let attempts = 0;
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 20px;
+}
 
-            const submitGuessButton = document.getElementById('submitGuess');
-            const messageParagraph = document.getElementById('message');
-            const hintParagraph = document.getElementById('hint');
-            const modal = document.getElementById('winModal');
-            const span = document.getElementsByClassName('close')[0];
+input {
+    padding: 10px;
+    margin: 10px 0;
+}
 
-            submitGuessButton.addEventListener('click', () => {
-                const userGuess = document.getElementById('guess').value.trim().toLowerCase();
-                
-                if (!userGuess) {
-                    messageParagraph.textContent = 'Veuillez entrer un nom de jeu.';
-                    return;
-                }
-                
-                attempts++;
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
 
-                if (userGuess === randomGame.title.toLowerCase()) {
-                    messageParagraph.textContent = '';
-                    hintParagraph.textContent = '';
-                    modal.style.display = 'block';
-                } else {
-                    let hint = '';
-                    if (attempts === 1) {
-                        hint = 'Indice 1: Le jeu est sorti en ' + randomGame.release_date;
-                    } else if (attempts === 2) {
-                        hint = 'Indice 2: Le jeu est disponible sur ' + randomGame.platform;
-                    } else if (attempts >= 3) {
-                        hint = 'Indice 3: Le score Metacritic est de ' + randomGame.score;
-                    }
+#message {
+    font-weight: bold;
+    color: #d9534f; /* Red color for error messages */
+}
 
-                    messageParagraph.textContent = `Mauvaise réponse. Vous avez ${attempts} essai${attempts > 1 ? 's' : ''} incorrect${attempts > 1 ? 's' : ''}. Essayez encore.`;
-                    hintParagraph.textContent = hint;
-                }
-            });
+#hint {
+    color: #5bc0de; /* Blue color for hints */
+}
 
-            span.onclick = function() {
-                modal.style.display = 'none';
-            }
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
 
-            window.onclick = function(event) {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
-                }
-            }
-        })
-        .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
-            const messageParagraph = document.getElementById('message');
-            messageParagraph.textContent = 'Une erreur est survenue lors du chargement des données. Veuillez réessayer plus tard.';
-        });
-});
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
