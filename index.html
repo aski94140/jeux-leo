@@ -3,16 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jeu de Devinettes</title>
+    <title>Jeu de Devinettes de Jeux Vidéo</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Jeu de Devinettes</h1>
+    <h1>Jeu de Devinettes de Jeux Vidéo</h1>
     <label for="guess">Devinez le jeu :</label>
-    <input type="text" id="guess">
+    <input type="text" id="guess" placeholder="Entrez le nom du jeu...">
     <button id="submitGuess">Soumettre</button>
     <p id="message"></p>
     <p id="hint"></p>
+    <div id="winModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Félicitations ! Vous avez deviné le bon jeu !</p>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
