@@ -1,6 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     fetch('games.json')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
         .then(games => {
             const randomGame = games[Math.floor(Math.random() * games.length)];
             let attempts = 0;
@@ -10,11 +15,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const hintParagraph = document.getElementById('hint');
 
             submitGuessButton.addEventListener('click', () => {
-                const userGuess = document.getElementById('guess').value.toLowerCase();
+                const userGuess = document.getElementById('guess').value.trim().toLowerCase();
+                
+                if (!userGuess) {
+                    messageParagraph.textContent = 'Veuillez entrer un nom de jeu.';
+                    return;
+                }
+                
                 attempts++;
 
                 if (userGuess === randomGame.title.toLowerCase()) {
                     messageParagraph.textContent = 'Félicitations ! Vous avez deviné le bon jeu : ' + randomGame.title;
+                    hintParagraph.textContent = '';  // Clear hint
                 } else {
                     let hint = '';
                     if (attempts === 1) {
@@ -24,9 +36,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else if (attempts >= 3) {
                         hint = 'Indice 3: Le score Metacritic est de ' + randomGame.score;
                     }
+
+                    messageParagraph.textContent = `Mauvaise réponse. Vous avez ${attempts} essai${attempts > 1 ? 's' : ''} incorrect${attempts > 1 ? 's' : ''}. Essayez encore.`;
                     hintParagraph.textContent = hint;
-                    messageParagraph.textContent = 'Mauvaise réponse. Essayez encore.';
                 }
             });
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+            const messageParagraph = document.getElementById('message');
+            messageParagraph.textContent = 'Une erreur est survenue lors du chargement des données. Veuillez réessayer plus tard.';
         });
 });
